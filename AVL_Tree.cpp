@@ -45,6 +45,7 @@ void AVL_Tree::AVL_insert(int v)
 		{
 			if (v < cur->value) // go left
 			{
+				cur->BF++; // update BF
 				if (cur->left_child == NULL) // Case NULL -> It is destination
 				{
 					cur->left_child = New_node;
@@ -54,6 +55,7 @@ void AVL_Tree::AVL_insert(int v)
 			}
 			else // go right
 			{
+				cur->BF--; // update BF
 				if (cur->right_child == NULL) // Case NULL -> It is destination
 				{
 					cur->right_child = New_node;
@@ -63,6 +65,10 @@ void AVL_Tree::AVL_insert(int v)
 			}
 		}//while end
 	}//else if(tree is not empty) end
+
+	//2 -> 1 == LL Rotation, 2 -> -1 == LR Rotation
+	//-2 -> -1 == RR Rotation, -2 -> 1 == RL Rotation
+
 }
 
 void AVL_Tree::AVL_delete(int v)
@@ -72,7 +78,7 @@ void AVL_Tree::AVL_delete(int v)
 	Node* least = NULL; //find least value, and delete it instead of del when condition satisfied
 	int temp = 0; // value of least
 
-	if (is_empty() == true)
+	if (is_empty() == true) // cannot delete anything
 	{
 		cout << "Tree is empty now." << endl;
 		return;
@@ -214,6 +220,6 @@ void AVL_Tree::print(Node* r)
 		return;
 	//print inordered tree
 	print(r->left_child);
-	cout << r->value << ' ';
+	cout << r->value << "(BF : " << r->BF <<") ";
 	print(r->right_child);
 }
