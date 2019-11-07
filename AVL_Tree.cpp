@@ -11,10 +11,17 @@ AVL_Tree::AVL_Tree(int v)
 	m_root = New_node;
 }
 
+void AVL_Tree::clear()
+{
+	_clear(m_root);
+}
 AVL_Tree::~AVL_Tree()
 {
-	while (m_root != NULL)
-		AVL_delete(m_root->value);
+	if (m_root != NULL)
+	{
+		clear();
+		m_root = NULL;
+	}
 }
 
 bool AVL_Tree::is_empty()
