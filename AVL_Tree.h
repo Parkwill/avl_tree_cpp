@@ -44,4 +44,8 @@ public:
 	{
 		return m_root;
 	}
+	int root_value()
+	{
+		return m_root->value;
+	}
 };
