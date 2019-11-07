@@ -90,7 +90,10 @@ void AVL_Tree::AVL_delete(int v)
 			if (del->value == v) //if left child of cur is destination
 			{
 				if (del->left_child == NULL && del->right_child == NULL) //leaf
+				{
+					cur->left_child = NULL;
 					delete del;
+				}
 				else if(del->left_child != NULL && del->right_child == NULL) //only left child
 				{
 					cur->left_child = del->left_child;
@@ -127,7 +130,10 @@ void AVL_Tree::AVL_delete(int v)
 			if (del->value == v) //if right child of cur is destination
 			{
 				if (del->left_child == NULL && del->right_child == NULL) //leaf
+				{
+					cur->right_child = NULL;
 					delete del;
+				}
 				else if (del->left_child != NULL && del->right_child == NULL) //only left child
 				{
 					cur->right_child = del->left_child;
