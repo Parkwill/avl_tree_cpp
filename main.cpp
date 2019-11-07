@@ -9,14 +9,16 @@ int main()
 	t.AVL_insert(11);
 	t.AVL_insert(5);
 	t.AVL_insert(3);
-	t.AVL_insert(15);
+	//t.AVL_insert(15);
+	//t.AVL_insert(13);
 
 	t.print(t.get_root());
+	cout << "<Root : " << t.root_value() << '>' << endl;
 
-	t.AVL_delete(15);
+	//t.AVL_delete(11);
 
-	cout << endl;
-	t.print(t.get_root());
+	//t.print(t.get_root());
+	//cout << "(Root : " << t.root_value() << ')' << endl;
 
 	return 0;
 }
