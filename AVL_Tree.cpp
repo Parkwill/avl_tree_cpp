@@ -70,6 +70,7 @@ void AVL_Tree::AVL_delete(int v)
 	Node* cur = m_root; //for search
 	Node* del = NULL; //delete node
 	Node* least = NULL; //find least value, and delete it instead of del when condition satisfied
+	int temp = 0; // value of least
 
 	if (is_empty() == true)
 	{
@@ -79,7 +80,7 @@ void AVL_Tree::AVL_delete(int v)
 
 	while (1)
 	{
-		if (cur->value < v) //go left
+		if (cur->value > v) //go left
 		{
 			del = cur->left_child;
 
@@ -105,8 +106,9 @@ void AVL_Tree::AVL_delete(int v)
 					least = del->right_child;
 					while (least->left_child != NULL)
 						least = least->left_child;
-					del->value = least->value;
-					delete least;
+					temp = least->value;
+					AVL_delete(temp);
+					del->value = temp;
 				}
 
 				break; //break the loop; subroutine executed
@@ -115,7 +117,7 @@ void AVL_Tree::AVL_delete(int v)
 			cur = del; // if delete not executed, go left
 			continue; //and go back
 		} // end if(go left)
-		else if (cur->value > v) //go right
+		else if (cur->value < v) //go right
 		{
 			del = cur->right_child;
 
@@ -141,8 +143,9 @@ void AVL_Tree::AVL_delete(int v)
 					least = del->right_child;
 					while (least->left_child != NULL)
 						least = least->left_child;
-					del->value = least->value;
-					delete least;
+					temp = least->value;
+					AVL_delete(temp);
+					del->value = temp;
 				}
 
 				break; //break the loop; subroutine executed
@@ -172,8 +175,9 @@ void AVL_Tree::AVL_delete(int v)
 				least = del->right_child;
 				while (least->left_child != NULL)
 					least = least->left_child;
-				del->value = least->value;
-				delete least;
+				temp = least->value;
+				AVL_delete(temp);
+				del->value = temp;
 			}
 
 			break; // break the loop; subroutine executed
@@ -202,7 +206,7 @@ void AVL_Tree::print(Node* r)
 {
 	if (r == NULL)
 		return;
-
+	//print inordered tree
 	print(r->left_child);
 	cout << r->value << ' ';
 	print(r->right_child);
