@@ -6,6 +6,23 @@ class AVL_Tree
 {
 private:
 	Node* m_root;
+
+	void _clear(Node* parent_node)
+	{
+		if (parent_node->left_child != NULL)
+		{
+			_clear(parent_node->left_child);
+			parent_node->left_child = NULL;
+		}
+
+		if (parent_node->right_child != NULL)
+		{
+			_clear(parent_node->right_child);
+			parent_node->right_child = NULL;
+		}
+
+		delete parent_node;
+	}
 	
 public:
 	//constructor
@@ -13,6 +30,7 @@ public:
 	AVL_Tree(int v);
 
 	//destructor
+	void clear();
 	~AVL_Tree();
 
 	//m_function
