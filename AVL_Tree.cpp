@@ -63,12 +63,74 @@ void AVL_Tree::AVL_insert(int v)
 				}
 				cur = cur->right_child; // or go right
 			}
-		}//while end
-	}//else if(tree is not empty) end
+		}// while end
+	}// else if end
 
-	//2 -> 1 == LL Rotation, 2 -> -1 == LR Rotation
-	//-2 -> -1 == RR Rotation, -2 -> 1 == RL Rotation
+	// 2 -> 1 == LL Rotation, 2 -> -1 == LR Rotation
+	// -2 -> -1 == RR Rotation, -2 -> 1 == RL Rotation
 
+	if (m_root->BF != 2 && m_root->BF != -2) // Case tree is balanced
+		return;
+	else // Find last unblanced factor node start from the root
+	{
+		Node* R_node = m_root; // for rotation 
+		Node* t = NULL;
+		int t1, t2, t3 = 0;
+
+		while (1) //find it
+		{
+			if (R_node->BF == 2)
+			{
+				if (R_node->left_child->BF == 2 || R_node->left_child->BF == -2)
+				{
+					R_node = R_node->left_child;
+					continue;
+				}
+				else
+					break;
+			}
+			else if (R_node->BF == -2)
+			{
+				if (R_node->left_child->BF == 2 || R_node->left_child->BF == -2)
+					R_node = R_node->left_child;
+				else
+					break;
+			}
+		}
+
+		if (R_node->BF == 2) // L rotation
+		{
+			if (R_node->left_child->BF == 1) // LL ratation
+			{
+				t1 = R_node->value;
+				t2 = R_node->left_child->value;
+				t3 = R_node->left_child->left_child->value;
+
+				R_node->value = t2;
+				R_node->left_child->value = t3;
+				R_node->left_child->left_child->value = t1;
+
+				t = R_node->left_child->right_child;
+				
+
+			}
+			else // LR rotaiton
+			{
+
+			}
+		}
+		else // R rotation
+		{
+			if (R_node->right_child->BF == 1) // RL ratation
+			{
+
+			}
+			else // RR rotaiton
+			{
+
+			}
+		}
+	}
 }
 
 void AVL_Tree::AVL_delete(int v)
@@ -86,71 +148,71 @@ void AVL_Tree::AVL_delete(int v)
 
 	while (1)
 	{
-		if (cur->value > v) //go left
+		if (v < cur->value) // go left
 		{
 			del = cur->left_child;
 
-			if (del == NULL) //cannot find destination
+			if (del == NULL) // cannot find destination
 				break;
 
-			if (del->value == v) //if left child of cur is destination
+			if (del->value == v) // if left child of cur is destination
 			{
 				if (del->left_child == NULL && del->right_child == NULL) //leaf
 				{
 					cur->left_child = NULL;
 					delete del;
 				}
-				else if(del->left_child != NULL && del->right_child == NULL) //only left child
+				else if(del->left_child != NULL && del->right_child == NULL) // only left child
 				{
 					cur->left_child = del->left_child;
 					delete del;
 				}
-				else if (del->left_child == NULL && del->right_child != NULL) //only right child
+				else if (del->left_child == NULL && del->right_child != NULL) // only right child
 				{
 					cur->left_child = del->right_child;
 					delete del;
 				}
-				else //has two children
+				else // has two children
 				{
 					least = del->right_child;
 					while (least->left_child != NULL)
 						least = least->left_child;
 					temp = least->value;
-					AVL_delete(temp);
+					AVL_delete(temp); // delete least
 					del->value = temp;
 				}
 
-				break; //break the loop; subroutine executed
+				break; // break the loop; subroutine executed
 			}
 			
 			cur = del; // if delete not executed, go left
-			continue; //and go back
+			continue; // and go back
 		} // end if(go left)
-		else if (cur->value < v) //go right
+		else if (cur->value < v) // go right
 		{
 			del = cur->right_child;
 
-			if (del == NULL) //cannot find destination
+			if (del == NULL) // cannot find destination
 				break;
 
-			if (del->value == v) //if right child of cur is destination
+			if (del->value == v) // if right child of cur is destination
 			{
-				if (del->left_child == NULL && del->right_child == NULL) //leaf
+				if (del->left_child == NULL && del->right_child == NULL) // leaf
 				{
 					cur->right_child = NULL;
 					delete del;
 				}
-				else if (del->left_child != NULL && del->right_child == NULL) //only left child
+				else if (del->left_child != NULL && del->right_child == NULL) // only left child
 				{
 					cur->right_child = del->left_child;
 					delete del;
 				}
-				else if (del->left_child == NULL && del->right_child != NULL) //only right child
+				else if (del->left_child == NULL && del->right_child != NULL) // only right child
 				{
 					cur->right_child = del->right_child;
 					delete del;
 				}
-				else //has two children
+				else // has two children
 				{
 					least = del->right_child;
 					while (least->left_child != NULL)
@@ -160,7 +222,7 @@ void AVL_Tree::AVL_delete(int v)
 					del->value = temp;
 				}
 
-				break; //break the loop; subroutine executed
+				break; // break the loop; subroutine executed
 			}
 
 			cur = del; // if delete not executed, go right
@@ -170,14 +232,14 @@ void AVL_Tree::AVL_delete(int v)
 		{
 			del = cur;
 
-			if (del->left_child == NULL && del->right_child == NULL) //root == leaf
+			if (del->left_child == NULL && del->right_child == NULL) // root == leaf
 				delete del;
-			else if (del->left_child != NULL && del->right_child == NULL) //only left child
+			else if (del->left_child != NULL && del->right_child == NULL) // only left child
 			{
 				m_root = del->left_child;
 				delete del;
 			}
-			else if (del->left_child == NULL && del->right_child != NULL) //only right child
+			else if (del->left_child == NULL && del->right_child != NULL) // only right child
 			{
 				m_root = del->right_child;
 				delete del;
@@ -218,7 +280,7 @@ void AVL_Tree::print(Node* r)
 {
 	if (r == NULL)
 		return;
-	//print inordered tree
+	// print inordered tree
 	print(r->left_child);
 	cout << r->value << "(BF : " << r->BF <<") ";
 	print(r->right_child);
