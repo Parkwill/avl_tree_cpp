@@ -73,18 +73,17 @@ void AVL_Tree::AVL_insert(int v)
 		return;
 	else // Find last unblanced factor node start from the root
 	{
-		Node* R_node = m_root; // for rotation 
-		Node* t = NULL;
-		int t1, t2, t3 = 0;
+		Node* R_node = m_root; // for rotation
+		int t1, t2, t3 = 0; // save value
 
-		while (1) //find it
+		while (1) // Find it first
 		{
 			if (R_node->BF == 2)
 			{
 				if (R_node->left_child->BF == 2 || R_node->left_child->BF == -2)
 				{
+					R_node->BF--;
 					R_node = R_node->left_child;
-					continue;
 				}
 				else
 					break;
@@ -92,45 +91,103 @@ void AVL_Tree::AVL_insert(int v)
 			else if (R_node->BF == -2)
 			{
 				if (R_node->left_child->BF == 2 || R_node->left_child->BF == -2)
+				{
+					R_node->BF++;
 					R_node = R_node->left_child;
+				}
 				else
 					break;
 			}
 		}
 
+		t1 = R_node->value; // A
+		t2 = R_node->left_child->value; // B
+		t3 = R_node->left_child->left_child->value; // C
+
 		if (R_node->BF == 2) // L rotation
 		{
 			if (R_node->left_child->BF == 1) // LL ratation
 			{
-				t1 = R_node->value;
-				t2 = R_node->left_child->value;
-				t3 = R_node->left_child->left_child->value;
-
+				// Change value ABC -> BCA
 				R_node->value = t2;
 				R_node->left_child->value = t3;
 				R_node->left_child->left_child->value = t1;
 
-				t = R_node->left_child->right_child;
-				
-
+				if (R_node->right_child != NULL) // If A have right child
+				{
+					// Connect A's right child again
+					R_node->left_child->left_child->right_child = R_node->right_child;
+					R_node->right_child = NULL;
+					// A -> B's right child
+					R_node->right_child = R_node->left_child->left_child;
+					R_node->left_child->left_child = NULL;
+					// Connect C's left child agian
+					R_node->left_child->left_child = R_node->right_child->left_child;
+					// Connect B's right child to A's left
+					R_node->right_child->left_child = R_node->left_child->right_child;
+					R_node->left_child->right_child = NULL;
+				}
+				else // simple LL rotation
+				{
+					R_node->right_child = R_node->left_child->left_child;
+					R_node->left_child->left_child = NULL;
+				}
 			}
 			else // LR rotaiton
 			{
+				// Change value C <-> A
+				R_node->value = t3;
+				R_node->left_child->right_child->value = t1;
 
+				R_node->right_child = R_node->left_child->right_child;
+				R_node->left_child->right_child = NULL;
 			}
-		}
+		} // End L rotation
 		else // R rotation
 		{
 			if (R_node->right_child->BF == 1) // RL ratation
 			{
+				// Change value C <-> A
+				R_node->value = t3;
+				R_node->left_child->right_child->value = t1;
 
+				R_node->left_child = R_node->right_child->left_child;
+				R_node->right_child->left_child = NULL;
 			}
 			else // RR rotaiton
 			{
+				// Change value ABC -> BCA
+				R_node->value = t2;
+				R_node->left_child->value = t3;
+				R_node->left_child->left_child->value = t1;
 
+				if (R_node->right_child != NULL) // If A have left child
+				{
+					// Connect A's left child again
+					R_node->right_child->right_child->left_child = R_node->left_child;
+					R_node->left_child = NULL;
+					// A -> B's left child
+					R_node->left_child = R_node->right_child->right_child;
+					R_node->right_child->right_child = NULL;
+					// Connect C's right child agian
+					R_node->right_child->right_child = R_node->left_child->right_child;
+					// Connect B's left child to A's right
+					R_node->left_child->right_child = R_node->right_child->left_child;
+					R_node->left_child->right_child = NULL;
+				}
+				else // simple RR rotation
+				{
+					R_node->left_child = R_node->right_child->right_child;
+					R_node->right_child->right_child = NULL;
+				}
 			}
-		}
-	}
+		} // End R rotation
+
+		// A, B, C's BF is 0 now
+		R_node->BF = 0;
+		R_node->left_child->BF = 0;
+		R_node->right_child->BF = 0;
+	} // Rotation end
 }
 
 void AVL_Tree::AVL_delete(int v)
