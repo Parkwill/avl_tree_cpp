@@ -49,7 +49,15 @@ void AVL_Tree::AVL_insert(int v)
 				if (cur->left_child == NULL) // Case NULL -> It is destination
 				{
 					cur->left_child = New_node;
-					break;
+					break; 
+				}
+				else if (cur->left_child->left_child != NULL && cur->left_child->right_child == NULL)
+				{
+					cur->BF--;
+				}
+				else if (cur->left_child->left_child == NULL && cur->left_child->right_child != NULL)
+				{
+					cur->BF--;
 				}
 				cur = cur->left_child; // or go left
 			}
@@ -60,6 +68,14 @@ void AVL_Tree::AVL_insert(int v)
 				{
 					cur->right_child = New_node;
 					break;
+				}
+				else if (cur->right_child->left_child != NULL && cur->right_child->right_child == NULL)
+				{
+					cur->BF++;
+				}
+				else if (cur->right_child->left_child == NULL && cur->right_child->right_child != NULL)
+				{
+					cur->BF++;
 				}
 				cur = cur->right_child; // or go right
 			}
@@ -126,11 +142,20 @@ void AVL_Tree::AVL_insert(int v)
 					// Connect B's right child to A's left
 					R_node->right_child->left_child = R_node->left_child->right_child;
 					R_node->left_child->right_child = NULL;
+
+					R_node->BF = 0;
+					R_node->left_child->BF = 1;
+					R_node->right_child->BF = 0;
+
 				}
 				else // simple LL rotation
 				{
 					R_node->right_child = R_node->left_child->left_child;
 					R_node->left_child->left_child = NULL;
+
+					R_node->BF = 0;
+					R_node->left_child->BF = 0;
+					R_node->right_child->BF = 0;
 				}
 			}
 			else // LR rotaiton
@@ -141,6 +166,10 @@ void AVL_Tree::AVL_insert(int v)
 
 				R_node->right_child = R_node->left_child->right_child;
 				R_node->left_child->right_child = NULL;
+
+				R_node->BF = 0;
+				R_node->left_child->BF = 0;
+				R_node->right_child->BF = 0;
 			}
 		} // End L rotation
 		else // R rotation
@@ -153,6 +182,10 @@ void AVL_Tree::AVL_insert(int v)
 
 				R_node->left_child = R_node->right_child->left_child;
 				R_node->right_child->left_child = NULL;
+
+				R_node->BF = 0;
+				R_node->left_child->BF = 0;
+				R_node->right_child->BF = 0;
 			}
 			else // RR rotaiton
 			{
@@ -174,19 +207,22 @@ void AVL_Tree::AVL_insert(int v)
 					// Connect B's left child to A's right
 					R_node->left_child->right_child = R_node->right_child->left_child;
 					R_node->left_child->right_child = NULL;
+
+					R_node->BF = 0;
+					R_node->left_child->BF = 0;
+					R_node->right_child->BF = -1;
 				}
 				else // simple RR rotation
 				{
 					R_node->left_child = R_node->right_child->right_child;
 					R_node->right_child->right_child = NULL;
+
+					R_node->BF = 0;
+					R_node->left_child->BF = 0;
+					R_node->right_child->BF = 0;
 				}
 			}
 		} // End R rotation
-
-		// A, B, C's BF is 0 now
-		R_node->BF = 0;
-		R_node->left_child->BF = 0;
-		R_node->right_child->BF = 0;
 	} // Rotation end
 }
 
